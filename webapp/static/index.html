@@ -1,0 +1,48 @@
+<DOCTYPE html>
+<html>
+    <body>
+        <h1>Rescale Image</h1>
+        <input id="image-input" type="file" name="image"/>
+        <input type="submit" value="upload" onclick="upload()"/>
+        <input type="button" value="update" onclick="update()"/>
+        <ul id="images">
+        </ul>
+
+        <script>
+            function upload() {
+                var imageInput = document.getElementById("image-input")
+                var formData = new FormData();
+                formData.append("image", imageInput.files[0]);
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "/upload");
+                xhr.send(formData);
+            }
+
+            function update() {
+                fetch('/images').then(function(response) {
+                    return response.json()
+                }).then(function(data) {
+                    var list = document.getElementById('images')
+                    list.innerHTML = ''
+
+                    for (var i = 0; i < data.FullImages.length; i++) {
+                        var item = document.createElement('li')
+                        var image = document.createElement('img')
+                        image.setAttribute('src', data.FullImages[i])
+                        item.appendChild(image)
+                        list.appendChild(item)
+                    }
+
+                    for (var i = 0; i < data.ResizedImages.length; i++) {
+                        var item = document.createElement('li')
+                        var image = document.createElement('img')
+                        image.setAttribute('src', data.ResizedImages[i])
+                        item.appendChild(image)
+                        list.appendChild(item)
+                    }
+                })
+            }
+        </script>
+    </body>
+</html>
